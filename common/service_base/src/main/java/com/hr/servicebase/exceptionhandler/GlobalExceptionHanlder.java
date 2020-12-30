@@ -1,6 +1,7 @@
 package com.hr.servicebase.exceptionhandler;
 
 import com.hr.commonutils.R;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 统一的异常处理
  */
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHanlder {
 
     //指定出现什么异常执行方法
@@ -34,6 +36,8 @@ public class GlobalExceptionHanlder {
     @ResponseBody
     public R error(EduException e) {
         e.printStackTrace();
+        //写入到error的日志文件
+        log.error(e.getMessage());
         return R.error().code(e.getCode()).message(e.getMsg());
     }
 }
