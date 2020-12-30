@@ -18,16 +18,10 @@
 
     <dependencies>
 
-<!--        引入service_base-->
+<!--        引入service_base, service_base已经包含了common_utils, 所以不用引入-->
         <dependency>
             <groupId>com.hr</groupId>
             <artifactId>service_base</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-<!--        引入common_utils-->
-        <dependency>
-            <groupId>com.hr</groupId>
-            <artifactId>common_utils</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

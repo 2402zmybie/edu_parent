@@ -7,6 +7,7 @@ import com.hr.commonutils.R;
 import com.hr.eduservice.entity.EduTeacher;
 import com.hr.eduservice.entity.vo.TeacherQuery;
 import com.hr.eduservice.service.impl.EduTeacherServiceImpl;
+import com.hr.servicebase.exceptionhandler.EduException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -122,6 +123,12 @@ public class EduTeacherController {
     @GetMapping("/getTeacher/{id}")
     private R getTeacher(@PathVariable String id) {
         EduTeacher eduTeacher = eduTeacherService.getById(id);
+
+        try {
+            int i = 1 / 0;
+        }catch (Exception e) {
+            throw new EduException(20001,"执行了自定义异常处理");
+        }
         return R.ok().data("teacher", eduTeacher);
     }
 
