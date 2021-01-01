@@ -99,6 +99,8 @@ public class EduTeacherController {
             // <=
             queryWrapper.le("gmt_create", end);
         }
+        //排序
+        queryWrapper.orderByDesc("gmt_create");
 
         eduTeacherService.page(page,queryWrapper);
         //总记录数
