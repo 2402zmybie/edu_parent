@@ -2,4 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hr.eduservice.mapper.EduCourseMapper">
 
+    <select id="mySelectById" resultType="com.hr.eduservice.entity.EduCourse" parameterType="int">
+        select * from edu_course where id = #{id}
+    </select>
+
 </mapper>

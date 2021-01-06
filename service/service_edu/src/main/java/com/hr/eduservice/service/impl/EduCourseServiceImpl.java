@@ -27,6 +27,9 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
     @Autowired
     private EduCourseDescriptionService eduCourseDescriptionService;
 
+//    @Autowired
+//    private EduCourseMapper eduCourseMapper;
+
     //添加课程基本信息的方法
     @Override
     public String saveCourseInfo(CourseInfoVo courseInfoVo) {
@@ -54,5 +57,46 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         eduCourseDescriptionService.save(eduCourseDescription);
         //返回新增课程id
         return cid;
+    }
+
+
+
+    @Override
+    public CourseInfoVo getCourseInfo(String courseId) {
+//        //1 查询课程表
+        EduCourse eduCourse = baseMapper.selectById(courseId);
+        EduCourseDescription eduCourseDescription = eduCourseDescriptionService.getById(courseId);
+        //2 查询描述表
+        CourseInfoVo courseInfoVo = new CourseInfoVo();
+        BeanUtils.copyProperties(eduCourse, courseInfoVo);
+        courseInfoVo.setDescription(eduCourseDescription.getDescription());
+        return courseInfoVo;
+
+        //1 查询课程表
+//        EduCourse eduCourse = baseMapper.selectById(courseId);
+//        EduCourse eduCourse = eduCourseMapper.mySelectById(courseId);
+//        CourseInfoVo courseInfoVo = new CourseInfoVo();
+//        BeanUtils.copyProperties(eduCourse,courseInfoVo);
+//        //2 查询描述表
+//        EduCourseDescription courseDescription = eduCourseDescriptionService.getById(courseId);
+//        courseInfoVo.setDescription(courseDescription.getDescription());
+//        return courseInfoVo;
+    }
+
+
+    @Override
+    public void updateCourseInfo(CourseInfoVo courseInfoVo) {
+        //修改课程表
+        EduCourse eduCourse = new EduCourse();
+        BeanUtils.copyProperties(courseInfoVo, eduCourse);
+        int update = baseMapper.updateById(eduCourse);
+        if(update == 0) {
+            throw new EduException(20001, "修改课程信息失败");
+        }
+        //修改描述表
+        EduCourseDescription eduCourseDescription = new EduCourseDescription();
+        eduCourseDescription.setId(courseInfoVo.getId());
+        eduCourseDescription.setDescription(courseInfoVo.getDescription());
+        eduCourseDescriptionService.updateById(eduCourseDescription);
     }
 }
