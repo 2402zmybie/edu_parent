@@ -1,16 +1,21 @@
 package com.hr.eduservice.controller;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hr.commonutils.R;
 import com.hr.eduservice.entity.EduCourse;
 import com.hr.eduservice.entity.vo.CourseInfoVo;
 import com.hr.eduservice.entity.vo.CoursePublishVo;
+import com.hr.eduservice.entity.vo.CourseQuery;
 import com.hr.eduservice.service.EduCourseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.io.output.AppendableOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -28,6 +33,19 @@ public class EduCourseController {
 
     @Autowired
     private EduCourseService eduCourseService;
+
+
+    @ApiOperation("分页查询课程列表")
+    @GetMapping("/pageQuery/{page}/{limit}")
+    public R pageQuery(@PathVariable Long page,
+                       @PathVariable Long limit,
+                       @ApiParam(required = false) CourseQuery courseQuery) {
+        //封装分页对象
+        Page<EduCourse> pagePram = new Page<>(page,limit);
+        eduCourseService.pageQuery(pagePram, courseQuery);
+        long total = pagePram.getTotal();
+        return R.ok().data("total", total).data("rows", pagePram.getRecords());
+    }
 
     @ApiOperation("添加课程")
     @PostMapping("/addCourseInfo")

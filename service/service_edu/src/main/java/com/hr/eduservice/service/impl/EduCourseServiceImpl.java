@@ -1,9 +1,13 @@
 package com.hr.eduservice.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hr.eduservice.entity.EduCourse;
 import com.hr.eduservice.entity.EduCourseDescription;
 import com.hr.eduservice.entity.vo.CourseInfoVo;
 import com.hr.eduservice.entity.vo.CoursePublishVo;
+import com.hr.eduservice.entity.vo.CourseQuery;
 import com.hr.eduservice.mapper.EduCourseMapper;
 import com.hr.eduservice.service.EduCourseDescriptionService;
 import com.hr.eduservice.service.EduCourseService;
@@ -12,6 +16,9 @@ import com.hr.servicebase.exceptionhandler.EduException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * <p>
@@ -27,6 +34,7 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
     //课程描述service
     @Autowired
     private EduCourseDescriptionService eduCourseDescriptionService;
+
 
 //    @Autowired
 //    private EduCourseMapper eduCourseMapper;
@@ -107,5 +115,33 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         //调用mapper, 自己写的sql语句
         CoursePublishVo publishCourseInfo = baseMapper.getPublishCourseInfo(courseId);
         return publishCourseInfo;
+    }
+
+    @Override
+    public void pageQuery(Page<EduCourse> pagePram, CourseQuery courseQuery) {
+        QueryWrapper<EduCourse> queryWrapper = new QueryWrapper<>();
+        if(courseQuery == null) {
+            //没有查询条件
+           baseMapper.selectPage(pagePram, null);
+           return;
+        }
+
+        String title = courseQuery.getTitle();
+        if(!StringUtils.isEmpty(title)) {
+            queryWrapper.like("title", title);
+        }
+        String teacherId = courseQuery.getTeacherId();
+        if(!StringUtils.isEmpty(teacherId)) {
+            queryWrapper.like("teacher_id", teacherId);
+        }
+        String subjectId = courseQuery.getSubjectId();
+        if(!StringUtils.isEmpty(subjectId)) {
+            queryWrapper.like("subject_id", subjectId);
+        }
+        String subjectParentId = courseQuery.getSubjectParentId();
+        if(!StringUtils.isEmpty(subjectParentId)) {
+            queryWrapper.like("subject_parent_id", subjectParentId);
+        }
+        baseMapper.selectPage(pagePram, queryWrapper);
     }
 }
