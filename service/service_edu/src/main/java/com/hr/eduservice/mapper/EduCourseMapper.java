@@ -2,6 +2,7 @@ package com.hr.eduservice.mapper;
 
 import com.hr.eduservice.entity.EduCourse;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hr.eduservice.entity.vo.CoursePublishVo;
 import org.apache.ibatis.annotations.Select;
 
 /**
@@ -14,8 +15,7 @@ import org.apache.ibatis.annotations.Select;
  */
 public interface EduCourseMapper extends BaseMapper<EduCourse> {
 
-    @Select("select * from edu_course where id=#{id}")
-    EduCourse mySelectById(String id);
+    CoursePublishVo getPublishCourseInfo(String courseId);
 
 
 }

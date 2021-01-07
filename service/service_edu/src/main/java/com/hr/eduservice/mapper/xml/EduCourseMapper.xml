@@ -2,8 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hr.eduservice.mapper.EduCourseMapper">
 
-    <select id="mySelectById" resultType="com.hr.eduservice.entity.EduCourse" parameterType="int">
-        select * from edu_course where id = #{id}
+    <select id="getPublishCourseInfo" resultType="coursePublishVo" parameterType="string">
+        SELECT ec.id,ec.title,ec.cover,ec.price, ec.lesson_num,
+            ecd.description,
+            et.name teacherName,
+            es1.title subjectLevelOne,
+            es2.title subjectLevelTwo
+        FROM edu_course ec
+        LEFT JOIN edu_course_description ecd ON ec.id=ecd.id
+        LEFT JOIN edu_teacher et ON ec.teacher_id=et.id
+        LEFT JOIN edu_subject es1 ON ec.subject_parent_id=es1.id
+        LEFT JOIN edu_subject es2 ON ec.subject_id=es2.id
+        WHERE ec.id=#{id}
     </select>
 
 </mapper>

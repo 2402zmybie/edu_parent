@@ -3,6 +3,7 @@ package com.hr.eduservice.service.impl;
 import com.hr.eduservice.entity.EduCourse;
 import com.hr.eduservice.entity.EduCourseDescription;
 import com.hr.eduservice.entity.vo.CourseInfoVo;
+import com.hr.eduservice.entity.vo.CoursePublishVo;
 import com.hr.eduservice.mapper.EduCourseMapper;
 import com.hr.eduservice.service.EduCourseDescriptionService;
 import com.hr.eduservice.service.EduCourseService;
@@ -98,5 +99,13 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         eduCourseDescription.setId(courseInfoVo.getId());
         eduCourseDescription.setDescription(courseInfoVo.getDescription());
         eduCourseDescriptionService.updateById(eduCourseDescription);
+    }
+
+
+    @Override
+    public CoursePublishVo getCoursePublish(String courseId) {
+        //调用mapper, 自己写的sql语句
+        CoursePublishVo publishCourseInfo = baseMapper.getPublishCourseInfo(courseId);
+        return publishCourseInfo;
     }
 }
