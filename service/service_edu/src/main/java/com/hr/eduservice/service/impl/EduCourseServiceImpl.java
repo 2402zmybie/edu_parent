@@ -9,9 +9,11 @@ import com.hr.eduservice.entity.vo.CourseInfoVo;
 import com.hr.eduservice.entity.vo.CoursePublishVo;
 import com.hr.eduservice.entity.vo.CourseQuery;
 import com.hr.eduservice.mapper.EduCourseMapper;
+import com.hr.eduservice.service.EduChapterService;
 import com.hr.eduservice.service.EduCourseDescriptionService;
 import com.hr.eduservice.service.EduCourseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hr.eduservice.service.EduVideoService;
 import com.hr.servicebase.exceptionhandler.EduException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,11 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
     //课程描述service
     @Autowired
     private EduCourseDescriptionService eduCourseDescriptionService;
+
+    @Autowired
+    private EduChapterService eduChapterService;
+    @Autowired
+    private EduVideoService eduVideoService;
 
 
 //    @Autowired
@@ -120,6 +127,7 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
     @Override
     public void pageQuery(Page<EduCourse> pagePram, CourseQuery courseQuery) {
         QueryWrapper<EduCourse> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("gmt_modified");
         if(courseQuery == null) {
             //没有查询条件
            baseMapper.selectPage(pagePram, null);
@@ -143,5 +151,21 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
             queryWrapper.like("subject_parent_id", subjectParentId);
         }
         baseMapper.selectPage(pagePram, queryWrapper);
+    }
+
+
+    @Override
+    public void deleteCourse(String courseId) {
+        //删除小节
+        eduVideoService.removeVideoByCourseId(courseId);
+        //删除章节
+        eduChapterService.removeChapterByCourseId(courseId);
+        //删除描述
+        eduCourseDescriptionService.removeById(courseId);
+        //删除课程
+        int result = baseMapper.deleteById(courseId);
+        if(result == 0) {
+            throw new EduException(20001, "删除失败");
+        }
     }
 }

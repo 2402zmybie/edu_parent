@@ -88,6 +88,11 @@ public class EduCourseController {
     }
 
 
+    @DeleteMapping("/deleteCourse/{courseId}")
+    public R deleteCourse(@PathVariable String courseId) {
+        eduCourseService.deleteCourse(courseId);
+        return R.ok();
+    }
 
 }
 
