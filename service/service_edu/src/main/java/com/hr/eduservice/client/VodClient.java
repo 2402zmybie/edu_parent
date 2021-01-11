@@ -11,7 +11,7 @@ import java.util.List;
 
 @Component
 //调用端 使用要调用的服务的名字,  但前提是service-vod已经注册在注册中心了
-@FeignClient("service-vod")
+@FeignClient(name = "service-vod", fallback = VodFileDegradeFeignClient.class)
 public interface VodClient {
 
     //定义调用方法的路径(完全路径), 直接复制接口即可

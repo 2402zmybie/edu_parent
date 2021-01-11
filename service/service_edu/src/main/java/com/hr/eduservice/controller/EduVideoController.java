@@ -5,6 +5,7 @@ import com.hr.commonutils.R;
 import com.hr.eduservice.client.VodClient;
 import com.hr.eduservice.entity.EduVideo;
 import com.hr.eduservice.service.EduVideoService;
+import com.hr.servicebase.exceptionhandler.EduException;
 import org.apache.poi.hssf.record.DVALRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -45,7 +46,10 @@ public class EduVideoController {
         String videoSourceId = eduVideo.getVideoSourceId();
         //远程调用nacos微服务实现 删除阿里云视频的方法
         if(!StringUtils.isEmpty(videoSourceId)) {
-            vodClient.removeAlyVideo(videoSourceId);
+            R result = vodClient.removeAlyVideo(videoSourceId);
+            if(result.getCode() == 20001) {
+                throw new EduException(20001,"删除视频失败, 熔断器执行..");
+            }
         }
         boolean flag = videoService.removeById(id);
         if(flag) {
