@@ -5,7 +5,10 @@ import com.aliyuncs.vod.model.v20170321.GetPlayInfoRequest;
 import com.aliyuncs.vod.model.v20170321.GetPlayInfoResponse;
 import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthRequest;
 import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthResponse;
+import org.apache.commons.lang.StringUtils;
+import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.hr.vodtest.InitObject.initVodClient;
@@ -65,5 +68,16 @@ public class TestVod {
         GetPlayInfoRequest request = new GetPlayInfoRequest();
         request.setVideoId("c261dfc58cef46598ffb9bb5c48689a5");
         return client.getAcsResponse(request);
+    }
+
+
+    @Test
+    public void stringTest() {
+        List<String> list = new ArrayList<>();
+        list.add("11");
+        list.add("22");
+        list.add("33");
+        String str = StringUtils.join(list.toArray(), ",");
+        System.out.println(str);
     }
 }

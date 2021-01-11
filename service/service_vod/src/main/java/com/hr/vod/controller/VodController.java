@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/eduvod/video")
 @Api("视频点播")
@@ -35,7 +37,7 @@ public class VodController {
 
     @ApiOperation("根据视频id删除阿里云视频")
     @DeleteMapping("/removeAlyVideo/{id}")
-    public R removeAlyVideo(@PathVariable String id) {
+    public R removeAlyVideo(@PathVariable("id") String id) {
         //初始化对象
         DefaultAcsClient client = InitVodClient.initVodClient(constantVodProperties.getKeyid(), constantVodProperties.getKeysecret());
         //创建删除视频的request对象
@@ -50,6 +52,14 @@ public class VodController {
             throw new EduException(20001, "删除视频失败");
         }
 
+    }
+
+    //删除多个阿里云视频的方法
+    @ApiOperation("删除多个阿里云视频的方法")
+    @DeleteMapping("/deleteBatch")
+    public R deleteBatch(@RequestParam("videoIdList") List<String> videoIdList) {
+        vodService.removeMoreAlyVideo(videoIdList);
+        return R.ok();
     }
 
 }

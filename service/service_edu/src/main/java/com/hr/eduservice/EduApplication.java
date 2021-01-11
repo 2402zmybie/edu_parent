@@ -2,14 +2,22 @@ package com.hr.eduservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@EnableDiscoveryClient   //启用nacos微服务, 注册服务
+@EnableFeignClients
 @ComponentScan(basePackages = {"com.hr"})
 public class EduApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(EduApplication.class);
+        try {
+            SpringApplication.run(EduApplication.class, args);
+        }catch(Throwable e) {
+            e.printStackTrace();
+        }
 
         //注：char只能放单个字符。
         char a = 'a';  //任意单个字符，加单引号。
