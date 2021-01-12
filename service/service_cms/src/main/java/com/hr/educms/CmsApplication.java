@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 //指定扫描包, 整合Swaggeer
 @ComponentScan({"com.hr"})
-@MapperScan("{com.hr.educms.mapper}")
+@MapperScan({"com.hr.educms.mapper"})
 public class CmsApplication {
 
     public static void main(String[] args) {

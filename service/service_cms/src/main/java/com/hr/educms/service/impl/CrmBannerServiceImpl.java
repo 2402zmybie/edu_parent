@@ -1,5 +1,6 @@
 package com.hr.educms.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hr.educms.entity.CrmBanner;
 import com.hr.educms.mapper.CrmBannerMapper;
 import com.hr.educms.service.CrmBannerService;
@@ -21,7 +22,11 @@ public class CrmBannerServiceImpl extends ServiceImpl<CrmBannerMapper, CrmBanner
 
     @Override
     public List<CrmBanner> selectAllBanner() {
-        List<CrmBanner> crmBannerList = baseMapper.selectList(null);
+        //根据id倒序并且只查询两条
+        QueryWrapper<CrmBanner> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("id");
+        queryWrapper.last("limit 2");
+        List<CrmBanner> crmBannerList = baseMapper.selectList(queryWrapper);
         return crmBannerList;
     }
 }
