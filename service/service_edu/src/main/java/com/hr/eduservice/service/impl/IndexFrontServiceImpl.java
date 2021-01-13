@@ -7,6 +7,7 @@ import com.hr.eduservice.service.EduCourseService;
 import com.hr.eduservice.service.EduTeacherService;
 import com.hr.eduservice.service.IndexFrontService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class IndexFrontServiceImpl implements IndexFrontService {
     @Autowired
     private EduTeacherService eduTeacherService;
 
+    @Cacheable(value = "course", key = "'courseList'")
     @Override
     public List<EduCourse> getCourse() {
         QueryWrapper<EduCourse> queryWrapper = new QueryWrapper<>();
@@ -28,6 +30,7 @@ public class IndexFrontServiceImpl implements IndexFrontService {
         return eduCourseList;
     }
 
+    @Cacheable(value = "teacher", key = "'teacherList'")
     @Override
     public List<EduTeacher> getTeacher() {
         QueryWrapper<EduTeacher> queryWrapper = new QueryWrapper<>();

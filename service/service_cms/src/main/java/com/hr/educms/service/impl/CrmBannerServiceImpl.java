@@ -5,6 +5,7 @@ import com.hr.educms.entity.CrmBanner;
 import com.hr.educms.mapper.CrmBannerMapper;
 import com.hr.educms.service.CrmBannerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
 @Service
 public class CrmBannerServiceImpl extends ServiceImpl<CrmBannerMapper, CrmBanner> implements CrmBannerService {
 
+    @Cacheable(value = "bannber",  key = "'selectIndexList'")
     @Override
     public List<CrmBanner> selectAllBanner() {
         //根据id倒序并且只查询两条
