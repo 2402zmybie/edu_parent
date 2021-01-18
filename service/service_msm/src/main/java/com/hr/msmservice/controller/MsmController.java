@@ -39,8 +39,8 @@ public class MsmController {
         boolean isSend = msmService.send(param, phone);
         if(isSend) {
             //发送成功,把发送成功的验证码放到redis里面
-            //设置有效时间 为10个小时
-            redisTemplate.opsForValue().set(phone, code,10, TimeUnit.HOURS);
+            //设置有效时间 为365天
+            redisTemplate.opsForValue().set(phone, code,365, TimeUnit.DAYS);
 
             return R.ok();
         }else {
