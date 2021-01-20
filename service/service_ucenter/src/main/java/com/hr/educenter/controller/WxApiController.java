@@ -2,6 +2,7 @@ package com.hr.educenter.controller;
 
 
 import com.google.gson.Gson;
+import com.hr.commonutils.JwtUtils;
 import com.hr.educenter.entity.UcenterMember;
 import com.hr.educenter.service.UcenterMemberService;
 import com.hr.educenter.utils.ConstantWxUtils;
@@ -53,20 +54,22 @@ public class WxApiController {
             HashMap mapAccessToken = gson.fromJson(accessTokenInfo, HashMap.class);
             String accessToken = (String) mapAccessToken.get("access_token");
             String openid = (String) mapAccessToken.get("openid");
-            //访问微信的资源服务器, 获取用户信息
-            String baseUserInfoUrl = "https://api.weixin.qq.com/sns/userinfo" +
-                    "?access_token=%s" +
-                    "&openid=%s";
-            String userInfoUrl = String.format(baseUserInfoUrl, accessToken, openid);
-            String userInfo = HttpClientUtils.get(userInfoUrl);
-            //{"openid":"o3_SC50t9tQZRgN0dq3MtTXffxyg","nickname":"Gatsby","sex":1,"language":"zh_CN","city":"","province":"Shanghai","country":"CN","headimgurl":"https:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/11gKZk9TQkfXibsqPUeg8muTyosaQaSmicMkxeGg9PTwSxiaA4XvnDj5RuHMhrwHwvl0aWEN5yAgShDxQ59TQTF2g\/132","privilege":[],"unionid":"oWgGz1HTPeZZCw9n7D9Ib7XCJBtg"}
-            log.error("userInfo:" + userInfo);
-            HashMap userInfoMap = gson.fromJson(userInfo, HashMap.class);
-            String nickname = (String) userInfoMap.get("nickname");
-            String headimgurl = (String) userInfoMap.get("headimgurl");
-            //存库, 先查询是否有这个微信登录的用户
+
+            //先查询是否有这个微信登录的用户
             UcenterMember ucenterMember =  ucenterMemberService.getOpenIdMember(openid);
             if(ucenterMember == null) {
+                //存库,
+                //访问微信的资源服务器, 获取用户信息
+                String baseUserInfoUrl = "https://api.weixin.qq.com/sns/userinfo" +
+                        "?access_token=%s" +
+                        "&openid=%s";
+                String userInfoUrl = String.format(baseUserInfoUrl, accessToken, openid);
+                String userInfo = HttpClientUtils.get(userInfoUrl);
+                //{"openid":"o3_SC50t9tQZRgN0dq3MtTXffxyg","nickname":"Gatsby","sex":1,"language":"zh_CN","city":"","province":"Shanghai","country":"CN","headimgurl":"https:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/11gKZk9TQkfXibsqPUeg8muTyosaQaSmicMkxeGg9PTwSxiaA4XvnDj5RuHMhrwHwvl0aWEN5yAgShDxQ59TQTF2g\/132","privilege":[],"unionid":"oWgGz1HTPeZZCw9n7D9Ib7XCJBtg"}
+                log.error("userInfo:" + userInfo);
+                HashMap userInfoMap = gson.fromJson(userInfo, HashMap.class);
+                String nickname = (String) userInfoMap.get("nickname");
+                String headimgurl = (String) userInfoMap.get("headimgurl");
                 //初次微信登录
                 ucenterMember = new UcenterMember();
                 ucenterMember.setOpenid(openid);
@@ -74,9 +77,11 @@ public class WxApiController {
                 ucenterMember.setAvatar(headimgurl);
                 ucenterMemberService.save(ucenterMember);
             }
+            //使用jwt根据member对象生成token字符串
+            String jwtToken = JwtUtils.getJwtToken(ucenterMember.getId(), ucenterMember.getNickname());
 
-            //返回首页面
-            return "redirect:http://localhost:3000";
+            //返回首页面,通过路径传递token字符串
+            return "redirect:http://localhost:3000?token="+ jwtToken;
 
         } catch (Exception e) {
             throw new EduException(20001,"微信登录失败");
