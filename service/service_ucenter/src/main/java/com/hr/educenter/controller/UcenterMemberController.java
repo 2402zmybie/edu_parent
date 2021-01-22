@@ -3,6 +3,7 @@ package com.hr.educenter.controller;
 
 import com.hr.commonutils.JwtUtils;
 import com.hr.commonutils.R;
+import com.hr.commonutils.ordervo.UcenterMemberOrder;
 import com.hr.educenter.entity.UcenterMember;
 import com.hr.educenter.entity.vo.RegisterVo;
 import com.hr.educenter.service.UcenterMemberService;
@@ -51,6 +52,16 @@ public class UcenterMemberController {
         //查询数据库根据用户id获取用户信息
         UcenterMember member = ucenterMemberService.getById(id);
         return R.ok().data("userInfo", member);
+    }
+
+
+    @PostMapping("/getUserInfoOrder/{id}")
+    public UcenterMemberOrder getUserInfoOrder(@PathVariable String id) {
+        UcenterMember member = ucenterMemberService.getById(id);
+        //把member对象里面的值复制给UCenterMemberOrder对象
+        UcenterMemberOrder ucenterMemberOrder = new UcenterMemberOrder();
+
+        return null;
     }
 }
 
