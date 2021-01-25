@@ -8,6 +8,7 @@ import com.hr.educenter.entity.UcenterMember;
 import com.hr.educenter.entity.vo.RegisterVo;
 import com.hr.educenter.service.UcenterMemberService;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,8 +61,9 @@ public class UcenterMemberController {
         UcenterMember member = ucenterMemberService.getById(id);
         //把member对象里面的值复制给UCenterMemberOrder对象
         UcenterMemberOrder ucenterMemberOrder = new UcenterMemberOrder();
-
-        return null;
+        //复制属性
+        BeanUtils.copyProperties(member, ucenterMemberOrder);
+        return ucenterMemberOrder;
     }
 }
 
