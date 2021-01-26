@@ -45,5 +45,22 @@ public class OrderController {
         return R.ok().data("item",order);
     }
 
+
+    @ApiOperation("根据课程id和用户id查询订单表中订单状态")
+    @GetMapping("/isBuyCourse/{courseId}/{memberId}")
+    public Boolean isBuyCourse(@PathVariable("courseId") String courseId, @PathVariable("memberId") String memberId) {
+        QueryWrapper<Order> wrapper = new QueryWrapper<>();
+        wrapper.eq("course_id", courseId);
+        wrapper.eq("member_id", memberId);
+        //支付状态 1代表已经支付
+        wrapper.eq("status",1);
+        int count = orderService.count(wrapper);
+        if(count == 1) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 }
 

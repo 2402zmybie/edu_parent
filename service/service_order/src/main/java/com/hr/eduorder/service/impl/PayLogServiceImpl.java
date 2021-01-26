@@ -1,5 +1,6 @@
 package com.hr.eduorder.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.wxpay.sdk.WXPayUtil;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -113,5 +115,21 @@ public class PayLogServiceImpl extends ServiceImpl<PayLogMapper, PayLog> impleme
         queryWrapper.eq("order_no", orderNo);
         Order order = orderService.getOne(queryWrapper);
         //更新订单表订单状态
+        if(order.getStatus().intValue() == 1) {
+            return;
+        }
+        //1 代表已经支付
+        order.setStatus(1);
+        orderService.updateById(order);
+        //记录支付日志
+        PayLog payLog=new PayLog();
+        payLog.setOrderNo(order.getOrderNo());//支付订单号
+        payLog.setPayTime(new Date());
+        payLog.setPayType(1);//支付类型
+        payLog.setTotalFee(order.getTotalFee());//总金额(分)
+        payLog.setTradeState(map.get("trade_state"));//支付状态
+        payLog.setTransactionId(map.get("transaction_id"));
+        payLog.setAttr(JSONObject.toJSONString(map));
+        baseMapper.insert(payLog);//插入到支付日志表
     }
 }
