@@ -65,5 +65,12 @@ public class UcenterMemberController {
         BeanUtils.copyProperties(member, ucenterMemberOrder);
         return ucenterMemberOrder;
     }
+
+
+    @GetMapping("/countRegister/{day}")
+    public R countRegister(@PathVariable("day") String day) {
+        Integer count = ucenterMemberService.countRegister(day);
+        return R.ok().data("countRegister", count);
+    }
 }
 
