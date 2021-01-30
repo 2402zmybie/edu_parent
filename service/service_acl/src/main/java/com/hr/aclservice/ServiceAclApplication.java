@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @EnableDiscoveryClient
 @ComponentScan("com.hr")
-@MapperScan("com.atguigu.aclservice.mapper")
+@MapperScan("com.hr.aclservice.mapper")
 public class ServiceAclApplication {
 
     public static void main(String[] args) {

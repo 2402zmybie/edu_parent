@@ -1,7 +1,7 @@
 package com.hr.serurity.security;
 
-import com.atguigu.commonutils.R;
-import com.atguigu.commonutils.ResponseUtil;
+import com.hr.commonutils.R;
+import com.hr.commonutils.ResponseUtil;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
