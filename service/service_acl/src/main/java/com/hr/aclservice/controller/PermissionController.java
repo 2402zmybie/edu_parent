@@ -26,6 +26,19 @@ public class PermissionController {
     @Autowired
     private PermissionService permissionService;
 
+
+    //------------------------------------------------------
+    @ApiOperation(value = "查询所有菜单")
+    @GetMapping("/getAllMenus")
+    public R getAllMenus() {
+        List<Permission> list =  permissionService.getAllMenuHR();
+        return R.ok().data("children",list);
+    }
+    //------------------------------------------------------
+
+
+
+
     //获取全部菜单
     @ApiOperation(value = "查询所有菜单")
     @GetMapping

@@ -304,4 +304,44 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         //添加到角色菜单关系表
         rolePermissionService.saveBatch(rolePermissionList);
     }
+
+
+
+    @Override
+    public List<Permission> getAllMenuHR() {
+        //查询菜单表所有数据
+        QueryWrapper<Permission> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("id");
+        List<Permission> permissionList = baseMapper.selectList(wrapper);
+        //把查询到的菜单list集合按照要求封装
+        List<Permission> resultList =  bulidPermissionHr(permissionList);
+        return resultList;
+    }
+
+    private List<Permission> bulidPermissionHr(List<Permission> permissionList) {
+        List<Permission> finalNode = new ArrayList<>();
+        //取得pid=0的菜单, 设置level为1
+        for (Permission permissionNode : permissionList) {
+            if("0".equals(permissionNode.getPid())) {
+                permissionNode.setLevel(1);
+                //查询子菜单,并且封装到集合中
+                finalNode.add(selectChildrenHr(permissionNode, permissionList));
+            }
+        }
+        return finalNode;
+    }
+
+    private Permission selectChildrenHr(Permission permissionNode, List<Permission> permissionList) {
+        //因为一层菜单里面要放二层菜单, 二层里面还要放三层
+        permissionNode.setChildren(new ArrayList<Permission>());
+        for (Permission p : permissionList) {
+            if(permissionNode.getId().equals(p.getPid())) {
+                //把父level+1
+                int level = permissionNode.getLevel() + 1;
+                p.setLevel(level);
+                permissionNode.getChildren().add(selectChildrenHr(p, permissionList));
+            }
+        }
+        return permissionNode;
+    }
 }
