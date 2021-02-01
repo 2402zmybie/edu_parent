@@ -44,4 +44,7 @@ public interface PermissionService extends IService<Permission> {
 
     List<Permission> getAllMenuHR();
 
+    void deleteMenus(String id);
+
+    void saveRolePermissionRealtionShipHR(String roleId, String[] permissionIds);
 }

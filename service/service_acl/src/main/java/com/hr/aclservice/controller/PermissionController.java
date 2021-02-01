@@ -34,6 +34,24 @@ public class PermissionController {
         List<Permission> list =  permissionService.getAllMenuHR();
         return R.ok().data("children",list);
     }
+
+    @ApiOperation(value = "删除菜单及其子菜单")
+    @DeleteMapping("/deleteMenus/{id}")
+    public R deleteMenus(@PathVariable("id") String id) {
+        permissionService.deleteMenus(id);
+        return R.ok();
+    }
+
+
+    @ApiOperation(value = "给角色分配菜单")
+    @DeleteMapping("/doAssignHR/{id}")
+    public R doAssignHR(@RequestParam("roleId") String roleId,
+                      @RequestParam("permissionIds") String[] permissionIds) {
+        permissionService.saveRolePermissionRealtionShipHR(roleId, permissionIds);
+        return R.ok();
+    }
+
+
     //------------------------------------------------------
 
 

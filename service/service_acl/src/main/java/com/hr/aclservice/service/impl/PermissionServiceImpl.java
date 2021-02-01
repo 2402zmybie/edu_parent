@@ -39,13 +39,10 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     //获取全部菜单
     @Override
     public List<Permission> queryAllMenu() {
-
         QueryWrapper<Permission> wrapper = new QueryWrapper<>();
         wrapper.orderByDesc("id");
         List<Permission> permissionList = baseMapper.selectList(wrapper);
-
         List<Permission> result = bulid(permissionList);
-
         return result;
     }
 
@@ -316,6 +313,45 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         //把查询到的菜单list集合按照要求封装
         List<Permission> resultList =  bulidPermissionHr(permissionList);
         return resultList;
+    }
+
+
+    //-----------------------------------------------------------------
+
+
+    @Override
+    public void deleteMenus(String id) {
+        //创建List集合, 用于封装所有删除菜单id值
+        List<String> idList = new ArrayList<>();
+        setPermissionChildById(id,idList);
+        //把当前id封装到list里面
+        idList.add(id);
+        baseMapper.deleteBatchIds(idList);
+    }
+
+    //给角色分配菜单
+    @Override
+    public void saveRolePermissionRealtionShipHR(String roleId, String[] permissionIds) {
+        List<RolePermission> rolePermissionList = new ArrayList<>();
+        for (String permissionId : permissionIds) {
+            RolePermission rolePermission = new RolePermission();
+            rolePermission.setRoleId(roleId);
+            rolePermission.setPermissionId(permissionId);
+            rolePermissionList.add(rolePermission);
+        }
+        rolePermissionService.saveBatch(rolePermissionList);
+    }
+
+    private void setPermissionChildById(String id, List<String> idList) {
+        QueryWrapper<Permission> wrapper = new QueryWrapper<>();
+        wrapper.eq("pid", id);
+        wrapper.select("id");
+        List<Permission> childIdList = baseMapper.selectList(wrapper);
+        for (Permission p : childIdList) {
+            idList.add(p.getId());
+            //递归查询
+            setPermissionChildById(p.getId(), idList);
+        }
     }
 
     private List<Permission> bulidPermissionHr(List<Permission> permissionList) {
